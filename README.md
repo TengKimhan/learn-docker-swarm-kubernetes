@@ -1,1 +1,1 @@
-# learn-docker-swarm-kubernetes
+# Learn Docker with Docker Swarm and Kubernetes
