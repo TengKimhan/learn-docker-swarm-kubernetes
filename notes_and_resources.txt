@@ -1,0 +1,21 @@
+Section 1: Quick Start
+    1. Kubernetes vs. Docker: "https://www.bretfisher.com/kubernetes-vs-docker/"
+    2. OCI Overview: "https://opencontainers.org/about/overview/"
+    3. Read Lecture: "https://github.com/BretFisher/udemy-docker-mastery/blob/main/intro/what-is-docker/what-is-docker.md"
+
+Section 3: The Best Way to Setup Docker for Your OS
+    1. Install Docker Desktop: "https://docs.docker.com/desktop/" 
+    2. Extension for VS Code:
+        + Extension Docker: "https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker"
+        + Extension Kubernetes: "https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools"
+        + Extension Remote Development: "https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack"
+        + Extension Live Share: "https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare"
+
+Section 14: Kubernetes Install And Your First Pods
+    1. Kubernetes Component: "https://kubernetes.io/docs/concepts/overview/components/#master-components"
+    2. Pod Overviews: "https://kubernetes.io/docs/concepts/workloads/pods/"
+    3. Service: "https://kubernetes.io/docs/concepts/services-networking/service/"
+    4. Namespace: "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+
+
+Github Resource Link: "https://github.com/bretfisher/udemy-docker-mastery"
