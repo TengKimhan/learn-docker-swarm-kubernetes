@@ -11,6 +11,117 @@ Section 3: The Best Way to Setup Docker for Your OS
         + Extension Remote Development: "https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack"
         + Extension Live Share: "https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare"
 
+Section 9: Swarm Basic Features and How to Use Them In Your Workflow
+    - Swarm Stacks and Production Grade Compose
+        + Stack the services for swarm
+        + It's similar using docker compose file in docker-compose
+        + Manage services, network, volume per stack.
+        + Common command:
+            docker stack deploy -c compose_file.yml name
+    - Secrets Storage for Swarm: Protecting Your Environment Variables
+        + Secret Storage introduced in 1.13.0 for storing secrets in Swarm.
+        + Secrets are
+            - Usernames and passwords
+            - TLS certificates and keys
+            - SSH keys
+            - any data that would not prefer to be on front page of news
+        + The purpose of the secret here is to create and pass the credential keys into the services.
+        + Common command for creating secret (using -):
+            echo "anything of secret" | docker secret create name_secret -
+
+        1. Manage sensitive data with Docker secrets: "https://docs.docker.com/engine/swarm/secrets/"
+        2. Secret in Compose File: "https://docs.docker.com/compose/compose-file/#secrets-configuration-reference"
+    
+    - docker-compose file in Assignment
+        version: '3.9'
+
+        services:
+            drupal:
+                image: drupal:9.3.13
+                ports:
+                - "8080:80"
+                volumes:
+                - drupal-modules:/var/www/html/modules
+                - drupal-profiles:/var/www/html/profiles
+                - drupal-sites:/var/www/html/sites
+                - drupal-themes:/var/www/html/themes
+            postgres:
+                image: postgres:14.3
+                environment:
+                - POSTGRES_PASSWORD_FILE=/run/secrets/psql-pw
+                secrets:
+                - psql-pw
+                volumes:
+                - drupal-data:/var/lib/postgresql/data
+            volumes:
+                drupal-data:
+                drupal-modules:
+                drupal-profiles:
+                drupal-sites:
+                drupal-themes:
+            secrets:
+                psql-pw:
+                    external: true # external true here meaning it will accept the secret key from command line
+
+Section 10: Swarm App Lifecycle
+    - Using Secrets With Local Docker Compose
+        + docker-compose.yml 
+            version: "3.9"
+
+            services:
+                psql:
+                    image: postgres
+                    secrets:
+                        - psql_user
+                        - psql_password
+                    environment:
+                        POSTGRES_PASSWORD_FILE: /run/secrets/psql_password
+                        POSTGRES_USER_FILE: /run/secrets/psql_user
+            secrets:
+                psql_user:
+                    file: ./psql_user.txt
+                psql_password:
+                    file: ./psql_password.txt
+        + On local development basically use the file and docker will bind mount the secret of that file.
+        + Otherwise, in production swarm we can use external true.
+    - Full App Lifecycle: Dev, Build and Deploy With a Single Compose Design
+        + How to set up and create a single compose file for 
+            - Local development environment: docker-compose up
+            - Remote CI environment: docker-compose up
+            - Remote production environment: docker stack deploy
+            - Command:  docker-compose -f docker-compose.yml -f docker-compose.prod.yml config // config command will output the combine docker compose file
+                        docker-compose -f docker-compose.yml -f docker-compose.prod.yml config > output.yml
+            1. Using Multiple Compose File: "https://docs.docker.com/compose/extends/#multiple-compose-files"
+            2. Using Compose File in Production: "https://docs.docker.com/compose/production/"
+        + Service Update: Changing Thing in Flight
+            - It provide rolling replacement of tasks/containers in a service.
+            - Swarm Update Example:
+                + Update the image used to a newer version
+                    docker service update --image myapp:1.2.1 <servicename>
+                + Add environment variable and remove a ports
+                    docker service update --env-add NODE_ENV=production --publish-rm 8080
+                + Change number of replica of two services
+                    docker service scale service1=8 service2=6
+            - Swarm Update in Stack files
+                + Just edit the YAML file
+                    docker stack deploy -c <yaml file> <stack_name>
+        + Healthchecks in Dockerfiles
+            - Healthchecks supported in Dockerfile, Compose YAML, docker run and Swarm services
+            - Healthchecks can be run using healthcheck command in the container.
+                1. Healthchecks in Dockerfile: "https://docs.docker.com/engine/reference/builder/#healthcheck"
+                2. Healthchecks in Composefile: "https://docs.docker.com/compose/compose-file/#healthcheck"
+            - Options for healthcheck command
+                --interval : how often it's going to run health check
+                --timeout : how long it's going to wait before it errors
+                --start-period : It allows you to give a specified amount of time to give your service to successfully start up before throwing a bad healthcheck result.
+                --retries : number of retries before consider as unhealthy
+
+            - Basic Command:
+                docker container run --name p2 -d --health-cmd="pg_isready -U postgres || exit 1" postgres
+
+
+
+
 Section 14: Kubernetes Install And Your First Pods
     1. Kubernetes Component: "https://kubernetes.io/docs/concepts/overview/components/#master-components"
     2. Pod Overviews: "https://kubernetes.io/docs/concepts/workloads/pods/"
